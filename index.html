@@ -3,90 +3,72 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dimo - Sua IA Motivacional</title>
+  <title>Dimo - Sua IA pessoal</title>
   <style>
     body {
       margin: 0;
       font-family: 'Poppins', sans-serif;
-      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      background: radial-gradient(circle at top left, #2c2c2c, #111);
       color: #fff;
+      height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100vh;
-      overflow: hidden;
+      text-align: center;
     }
-
-    h1 {
-      font-size: 2.5rem;
-      margin-bottom: 0.5rem;
-      color: #ff9a3c;
-    }
-
-    p {
-      font-size: 1.1rem;
-      margin-bottom: 1rem;
-    }
-
+    h1 { color: #ff914d; font-size: 2.5rem; }
+    p { font-size: 1.1rem; }
     textarea {
       width: 80%;
       height: 100px;
+      margin-top: 1rem;
       border-radius: 10px;
       border: none;
-      padding: 10px;
-      resize: none;
       outline: none;
+      padding: 10px;
       font-size: 1rem;
-      margin-bottom: 1rem;
+      resize: none;
     }
-
     button {
-      background-color: #ff9a3c;
+      margin-top: 1rem;
+      background: #ff914d;
       border: none;
       padding: 10px 20px;
       border-radius: 20px;
       font-size: 1rem;
-      font-weight: bold;
       cursor: pointer;
-      transition: all 0.3s;
+      transition: 0.3s;
     }
-
-    button:hover {
-      background-color: #ffa94d;
-      transform: scale(1.05);
-    }
-
+    button:hover { background: #ffa85c; transform: scale(1.05); }
     .response {
       margin-top: 20px;
-      max-width: 80%;
-      text-align: center;
-      font-size: 1.1rem;
-      background: rgba(255, 255, 255, 0.1);
       padding: 15px;
-      border-radius: 15px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      width: 80%;
     }
   </style>
 </head>
 <body>
   <h1>🔥 Dimo</h1>
-  <p>Sua IA motivacional.</p>
+  <p>Sua IA pessoal!</p>
 
-  <textarea id="userInput" placeholder="Fale comigo..."></textarea><br />
-  <button id="sendBtn">Falar com Dimo</button>
+  <textarea id="input" placeholder="Diga algo pra Dimo..."></textarea><br>
+  <button id="sendBtn">Enviar</button>
 
   <div class="response" id="response"></div>
 
   <script>
     const sendBtn = document.getElementById('sendBtn');
-    const userInput = document.getElementById('userInput');
+    const input = document.getElementById('input');
     const responseDiv = document.getElementById('response');
 
     async function talkToDimo() {
-      const text = userInput.value.trim();
+      const text = input.value.trim();
       if (!text) return;
 
-      responseDiv.innerHTML = "🎤 Dimo está pensando...";
+      responseDiv.textContent = "🎧 Dimo está pensando...";
       const res = await fetch("/api/dimo", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
@@ -94,13 +76,14 @@
       });
 
       const data = await res.json();
-      responseDiv.innerHTML = `💬 ${data.reply}`;
+      responseDiv.textContent = "💬 " + data.reply;
 
-      const utterance = new SpeechSynthesisUtterance(data.reply);
-      utterance.lang = "pt-BR";
-      utterance.pitch = 1.1;
-      utterance.rate = 1;
-      speechSynthesis.speak(utterance);
+      const voice = new SpeechSynthesisUtterance(data.reply);
+      voice.lang = "pt-BR";
+      voice.pitch = 1.05;
+      voice.rate = 1.0;
+      voice.volume = 1;
+      speechSynthesis.speak(voice);
     }
 
     sendBtn.addEventListener('click', talkToDimo);
