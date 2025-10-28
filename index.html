@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Dimo - Sua IA Motivacional</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      overflow: hidden;
+    }
+
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 0.5rem;
+      color: #ff9a3c;
+    }
+
+    p {
+      font-size: 1.1rem;
+      margin-bottom: 1rem;
+    }
+
+    textarea {
+      width: 80%;
+      height: 100px;
+      border-radius: 10px;
+      border: none;
+      padding: 10px;
+      resize: none;
+      outline: none;
+      font-size: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    button {
+      background-color: #ff9a3c;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 20px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    button:hover {
+      background-color: #ffa94d;
+      transform: scale(1.05);
+    }
+
+    .response {
+      margin-top: 20px;
+      max-width: 80%;
+      text-align: center;
+      font-size: 1.1rem;
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      border-radius: 15px;
+    }
+  </style>
+</head>
+<body>
+  <h1>🔥 Dimo</h1>
+  <p>Sua IA motivacional com voz e atitude.</p>
+
+  <textarea id="userInput" placeholder="Fale comigo..."></textarea><br />
+  <button id="sendBtn">Falar com Dimo</button>
+
+  <div class="response" id="response"></div>
+
+  <script>
+    const sendBtn = document.getElementById('sendBtn');
+    const userInput = document.getElementById('userInput');
+    const responseDiv = document.getElementById('response');
+
+    async function talkToDimo() {
+      const text = userInput.value.trim();
+      if (!text) return;
+
+      responseDiv.innerHTML = "🎤 Dimo está pensando...";
+      const res = await fetch("/api/dimo", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ message: text })
+      });
+
+      const data = await res.json();
+      responseDiv.innerHTML = `💬 ${data.reply}`;
+
+      const utterance = new SpeechSynthesisUtterance(data.reply);
+      utterance.lang = "pt-BR";
+      utterance.pitch = 1.1;
+      utterance.rate = 1;
+      speechSynthesis.speak(utterance);
+    }
+
+    sendBtn.addEventListener('click', talkToDimo);
+  </script>
+</body>
+</html>
